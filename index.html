@@ -271,9 +271,10 @@
 
   .foot-bottom{
     margin-top: clamp(40px,6vw,70px); padding-top: 1.6em; border-top:1px solid var(--line);
-    display:flex; justify-content:space-between; flex-wrap:wrap; gap:1em;
+    display:flex; flex-direction:column; gap:.7em;
     font-size:.8rem; color: var(--ink-soft);
   }
+  .foot-bottom-row{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:1em; }
 
   /* ---------- Responsive ---------- */
   @media (max-width: 880px){
@@ -432,12 +433,12 @@
       <div class="foot-top">
         <div class="foot-brand reveal">
           <img id="footer-logo" src="aorael-books-logo.png" alt="Aorael Books" loading="lazy" decoding="async">
-          <p>A brand-new independent press acquiring its first list — voice-driven fiction, essays, and literature in translation. Founded 2026, Brooklyn &amp; London.</p>
+          <p>We are an innovative independent eBook publisher founded in Yongsan, Seoul, in 2026, putting the value of AI into action.</p>
           <form class="news-form" id="newsForm">
-            <input type="email" placeholder="you@email.com" aria-label="Email address" required>
+            <input type="email" id="newsEmail" placeholder="you@email.com" aria-label="Email address" required>
             <button type="submit">Subscribe</button>
           </form>
-          <p class="news-note" id="newsNote">One email a month — new titles, excerpts, the occasional essay.</p>
+          <p class="news-note" id="newsNote"></p>
         </div>
         <div class="foot-cols reveal">
           <div>
@@ -461,8 +462,11 @@
         </div>
       </div>
       <div class="foot-bottom">
-        <span>© 2026 Aorael Books. All rights reserved.</span>
-        <span>Set in Fraunces &amp; Archivo.</span>
+        <div class="foot-legal">주식회사 아오라엘 · 신고번호: 제 2026-000080호 · 소재지: 서울특별시 한강대로96길 56-3, 2-1 · FAX: 0508-940-5274</div>
+        <div class="foot-bottom-row">
+          <span>© 2026 Aorael Books. All rights reserved.</span>
+          <span>Set in Fraunces &amp; Archivo.</span>
+        </div>
       </div>
     </div>
   </footer>
@@ -532,13 +536,19 @@
     document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('is-in'); });
   }
 
-  // Newsletter form: local-only confirmation (no backend / no data sent anywhere)
+  // Newsletter form: no backend, so submitting opens the visitor's mail app
+  // with a message addressed to partners@aorael.com containing their address.
   var form = document.getElementById('newsForm');
   var note = document.getElementById('newsNote');
+  var emailInput = document.getElementById('newsEmail');
   if(form){
     form.addEventListener('submit', function(ev){
       ev.preventDefault();
-      note.textContent = "Thanks — you're on the list.";
+      var email = (emailInput && emailInput.value || '').trim();
+      var subject = encodeURIComponent('Newsletter signup');
+      var body = encodeURIComponent('Please add this address to the Aorael Books newsletter list:\n\n' + email);
+      window.location.href = 'mailto:partners@aorael.com?subject=' + subject + '&body=' + body;
+      if(note) note.textContent = "Opening your email app to confirm...";
     });
   }
 
